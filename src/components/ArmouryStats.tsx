@@ -379,31 +379,32 @@ const ArmouryStats = () => {
             {/* ── Charts ────────────────────────────────────────────── */}
             <section>
                 <SectionHeading icon={<Activity className="w-4 h-4" />} title="Visual Charts" />
-                <div className="grid lg:grid-cols-5 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                     {/* Bar chart — 3 / 5 width */}
                     <div className="lg:col-span-3 rounded-xl border border-border bg-card p-5 shadow-sm">
                         <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
                             Arms Issued vs Returned — Last 7 Days
                         </h3>
                         {dailyData.length === 0 ? (
-                            <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">
+                            <div className="flex items-center justify-center h-40 text-muted-foreground text-sm">
                                 No data for the last 7 days
                             </div>
                         ) : (
-                            <ResponsiveContainer width="100%" height={220}>
+                            <ResponsiveContainer width="100%" height={200}>
                                 <BarChart data={dailyData} barCategoryGap="30%">
                                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                                     <XAxis
                                         dataKey="day"
-                                        tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                                        tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
                                         axisLine={false}
                                         tickLine={false}
                                     />
                                     <YAxis
-                                        tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                                        tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
                                         axisLine={false}
                                         tickLine={false}
                                         allowDecimals={false}
+                                        width={24}
                                     />
                                     <Tooltip
                                         contentStyle={{
@@ -427,11 +428,11 @@ const ArmouryStats = () => {
                             Weapon Type Distribution (Currently Issued)
                         </h3>
                         {weaponTypes.length === 0 ? (
-                            <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">
+                            <div className="flex items-center justify-center h-40 text-muted-foreground text-sm">
                                 No arms currently issued
                             </div>
                         ) : (
-                            <ResponsiveContainer width="100%" height={220}>
+                            <ResponsiveContainer width="100%" height={200}>
                                 <PieChart>
                                     <Pie
                                         data={weaponTypes}
@@ -439,13 +440,9 @@ const ArmouryStats = () => {
                                         nameKey="weapon_type"
                                         cx="50%"
                                         cy="50%"
-                                        outerRadius={80}
-                                        innerRadius={44}
+                                        outerRadius={72}
+                                        innerRadius={38}
                                         paddingAngle={3}
-                                        label={({ weapon_type, percent }) =>
-                                            `${weapon_type} ${(percent * 100).toFixed(0)}%`
-                                        }
-                                        labelLine={false}
                                     >
                                         {weaponTypes.map((_, i) => (
                                             <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
@@ -458,6 +455,10 @@ const ArmouryStats = () => {
                                             borderRadius: "8px",
                                             fontSize: "12px",
                                         }}
+                                    />
+                                    <Legend
+                                        wrapperStyle={{ fontSize: "11px" }}
+                                        formatter={(value) => value}
                                     />
                                 </PieChart>
                             </ResponsiveContainer>
@@ -511,7 +512,7 @@ const ArmouryStats = () => {
             {/* ── Personnel Metrics ─────────────────────────────────── */}
             <section>
                 <SectionHeading icon={<Users className="w-4 h-4" />} title="Personnel Metrics" />
-                <div className="grid lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Top Users */}
                     <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
                         <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">
@@ -520,39 +521,41 @@ const ArmouryStats = () => {
                         {topUsers.length === 0 ? (
                             <p className="text-sm text-muted-foreground">No data yet.</p>
                         ) : (
-                            <table className="w-full text-xs">
-                                <thead>
-                                    <tr className="border-b border-border text-muted-foreground">
-                                        <th className="text-left pb-2 font-semibold">#</th>
-                                        <th className="text-left pb-2 font-semibold">Army No</th>
-                                        <th className="text-left pb-2 font-semibold">Name</th>
-                                        <th className="text-right pb-2 font-semibold">Txns</th>
-                                        <th className="text-right pb-2 font-semibold">Active</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {topUsers.map((u, i) => (
-                                        <tr key={u.army_no} className="border-b border-border/40 last:border-0">
-                                            <td className="py-2 font-bold text-muted-foreground">{i + 1}</td>
-                                            <td className="py-2 font-mono">{u.army_no}</td>
-                                            <td className="py-2">
-                                                <span className="text-muted-foreground mr-1">{u.rank}</span>
-                                                {u.name}
-                                            </td>
-                                            <td className="py-2 text-right font-bold text-primary">
-                                                {u.total_transactions}
-                                            </td>
-                                            <td className="py-2 text-right">
-                                                {u.currently_issued > 0 ? (
-                                                    <span className="text-amber-500 font-semibold">{u.currently_issued}</span>
-                                                ) : (
-                                                    <span className="text-green-500">0</span>
-                                                )}
-                                            </td>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-xs min-w-[320px]">
+                                    <thead>
+                                        <tr className="border-b border-border text-muted-foreground">
+                                            <th className="text-left pb-2 font-semibold">#</th>
+                                            <th className="text-left pb-2 font-semibold">Army No</th>
+                                            <th className="text-left pb-2 font-semibold">Name</th>
+                                            <th className="text-right pb-2 font-semibold">Txns</th>
+                                            <th className="text-right pb-2 font-semibold">Active</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {topUsers.map((u, i) => (
+                                            <tr key={u.army_no} className="border-b border-border/40 last:border-0">
+                                                <td className="py-2 font-bold text-muted-foreground">{i + 1}</td>
+                                                <td className="py-2 font-mono">{u.army_no}</td>
+                                                <td className="py-2">
+                                                    <span className="text-muted-foreground mr-1">{u.rank}</span>
+                                                    {u.name}
+                                                </td>
+                                                <td className="py-2 text-right font-bold text-primary">
+                                                    {u.total_transactions}
+                                                </td>
+                                                <td className="py-2 text-right">
+                                                    {u.currently_issued > 0 ? (
+                                                        <span className="text-amber-500 font-semibold">{u.currently_issued}</span>
+                                                    ) : (
+                                                        <span className="text-green-500">0</span>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         )}
                     </div>
 
@@ -593,7 +596,7 @@ const ArmouryStats = () => {
             {/* ── Alerts & Monitoring ───────────────────────────────── */}
             <section>
                 <SectionHeading icon={<Wrench className="w-4 h-4" />} title="Alerts & Monitoring" />
-                <div className="grid lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Inventory usage */}
                     <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
                         <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
@@ -647,30 +650,32 @@ const ArmouryStats = () => {
                                 <p className="text-sm">All weapons within normal usage limits.</p>
                             </div>
                         ) : (
-                            <table className="w-full text-xs">
-                                <thead>
-                                    <tr className="border-b border-border text-muted-foreground">
-                                        <th className="text-left pb-2 font-semibold">Butt No</th>
-                                        <th className="text-left pb-2 font-semibold">Type</th>
-                                        <th className="text-right pb-2 font-semibold">Issues</th>
-                                        <th className="text-right pb-2 font-semibold">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {maintenance.map((m, i) => (
-                                        <tr key={i} className="border-b border-border/40 last:border-0">
-                                            <td className="py-2 font-mono font-bold">{m.butt_no}</td>
-                                            <td className="py-2">{m.type_of_weapon}</td>
-                                            <td className="py-2 text-right font-bold text-amber-400">{m.issue_count}</td>
-                                            <td className="py-2 text-right">
-                                                <span className="bg-amber-500/20 text-amber-400 text-[10px] font-semibold px-1.5 py-0.5 rounded-full">
-                                                    Inspect
-                                                </span>
-                                            </td>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-xs min-w-[280px]">
+                                    <thead>
+                                        <tr className="border-b border-border text-muted-foreground">
+                                            <th className="text-left pb-2 font-semibold">Butt No</th>
+                                            <th className="text-left pb-2 font-semibold">Type</th>
+                                            <th className="text-right pb-2 font-semibold">Issues</th>
+                                            <th className="text-right pb-2 font-semibold">Status</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {maintenance.map((m, i) => (
+                                            <tr key={i} className="border-b border-border/40 last:border-0">
+                                                <td className="py-2 font-mono font-bold">{m.butt_no}</td>
+                                                <td className="py-2">{m.type_of_weapon}</td>
+                                                <td className="py-2 text-right font-bold text-amber-400">{m.issue_count}</td>
+                                                <td className="py-2 text-right">
+                                                    <span className="bg-amber-500/20 text-amber-400 text-[10px] font-semibold px-1.5 py-0.5 rounded-full">
+                                                        Inspect
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         )}
                     </div>
                 </div>
@@ -679,8 +684,8 @@ const ArmouryStats = () => {
             {/* ── Recent Activity ───────────────────────────────────── */}
             <section>
                 <SectionHeading icon={<Activity className="w-4 h-4" />} title="Recent Activity" />
-                <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
-                    <table className="w-full text-xs">
+                <div className="rounded-xl border border-border bg-card shadow-sm overflow-x-auto">
+                    <table className="w-full text-xs min-w-[480px]">
                         <thead>
                             <tr className="bg-muted/50 border-b border-border">
                                 <th className="text-left px-4 py-3 font-semibold text-muted-foreground">Army No</th>
