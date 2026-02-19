@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Shield, ClipboardList, BarChart3, LogOut, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DailyArmsRegister from "@/components/DailyArmsRegister";
+import ArmouryStats from "@/components/ArmouryStats";
 import { supabase } from "@/lib/supabase";
 
 const Dashboard = () => {
@@ -123,11 +124,7 @@ const Dashboard = () => {
         {/* Content */}
         <main className="flex-1 p-6 overflow-auto">
           {activeTab === "register" && <DailyArmsRegister />}
-          {activeTab === "stats" && (
-            <div className="flex items-center justify-center h-64 text-muted-foreground">
-              <p>Statistics module — coming soon</p>
-            </div>
-          )}
+          {activeTab === "stats" && <ArmouryStats />}
         </main>
       </div>
     </div>
