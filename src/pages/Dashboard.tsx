@@ -62,8 +62,8 @@ const Dashboard = () => {
       >
         {/* Logo */}
         <div className="p-4 flex items-center gap-3 border-b border-sidebar-border">
-          <div className="w-9 h-9 rounded-full bg-sidebar-primary flex items-center justify-center">
-            <Shield className="w-5 h-5 text-sidebar-primary-foreground" />
+          <div className="w-10 h-10 flex items-center justify-center">
+            <img src="/logoaa.png" alt="Logo" className="w-full h-full object-contain" />
           </div>
           <div className="min-w-0">
             <p className="text-sm font-bold text-sidebar-foreground truncate">AHQ SIG BN</p>
@@ -78,8 +78,8 @@ const Dashboard = () => {
               key={item.id}
               onClick={() => setActiveTab(item.id)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${activeTab === item.id
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
                 }`}
             >
               <item.icon className="w-4 h-4 shrink-0" />
