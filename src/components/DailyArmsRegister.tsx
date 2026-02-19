@@ -9,8 +9,9 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Search, Loader2 } from "lucide-react";
+import { Plus, Search, Loader2, Undo2 } from "lucide-react";
 import IssueArmsDialog from "./IssueArmsDialog";
+import ReturnArmsDialog from "./ReturnArmsDialog";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
@@ -26,7 +27,6 @@ interface ArmsRecord {
   buttNo: string;
   registerNo: string;
   dateOut: string;
-  signature: string;
   dateIn: string;
   signatureStoreman: string;
   remarks: string;
@@ -37,6 +37,8 @@ const DailyArmsRegister = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [returnDialogOpen, setReturnDialogOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<ArmsRecord | null>(null);
 
   useEffect(() => {
     fetchRecords();
@@ -84,7 +86,6 @@ const DailyArmsRegister = () => {
         buttNo: r.butt_no,
         registerNo: r.register_no,
         dateOut: r.date_out ? new Date(r.date_out).toLocaleDateString("en-GB") : "",
-        signature: r.signature,
         dateIn: r.date_in ? new Date(r.date_in).toLocaleDateString("en-GB") : "",
         signatureStoreman: r.signature_storeman,
         remarks: r.remarks,
@@ -118,7 +119,6 @@ const DailyArmsRegister = () => {
           bayonet_complete: record.bayonetComplete,
           butt_no: record.buttNo,
           register_no: record.registerNo,
-          signature: record.signature,
           remarks: record.remarks
         }]);
 
@@ -127,6 +127,26 @@ const DailyArmsRegister = () => {
       fetchRecords(); // Refresh data
     } catch (error: any) {
       toast.error("Error adding record: " + error.message);
+    }
+  };
+
+  const handleReturnArms = async (signatureStoreman: string) => {
+    if (!selectedRecord) return;
+
+    try {
+      const { error } = await supabase
+        .from('arms_records')
+        .update({
+          date_in: new Date().toISOString(),
+          signature_storeman: signatureStoreman
+        })
+        .eq('id', selectedRecord.id);
+
+      if (error) throw error;
+      toast.success("Arms returned successfully");
+      fetchRecords();
+    } catch (error: any) {
+      toast.error("Error returning arms: " + error.message);
     }
   };
 
@@ -172,10 +192,10 @@ const DailyArmsRegister = () => {
               <TableHead className="text-table-header-foreground font-semibold text-xs">Butt No</TableHead>
               <TableHead className="text-table-header-foreground font-semibold text-xs">Reg No</TableHead>
               <TableHead className="text-table-header-foreground font-semibold text-xs">Date Out</TableHead>
-              <TableHead className="text-table-header-foreground font-semibold text-xs">Signature</TableHead>
               <TableHead className="text-table-header-foreground font-semibold text-xs">Date In</TableHead>
               <TableHead className="text-table-header-foreground font-semibold text-xs">Sig. Storeman</TableHead>
               <TableHead className="text-table-header-foreground font-semibold text-xs">Remarks</TableHead>
+              <TableHead className="text-table-header-foreground font-semibold text-xs text-center">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -208,10 +228,27 @@ const DailyArmsRegister = () => {
                   <TableCell className="text-xs">{record.buttNo}</TableCell>
                   <TableCell className="text-xs">{record.registerNo}</TableCell>
                   <TableCell className="text-xs">{record.dateOut}</TableCell>
-                  <TableCell className="text-xs">{record.signature}</TableCell>
                   <TableCell className="text-xs">{record.dateIn || "—"}</TableCell>
-                  <TableCell className="text-xs">{record.signatureStoreman}</TableCell>
+                  <TableCell className="text-xs font-medium">{record.signatureStoreman || "—"}</TableCell>
                   <TableCell className="text-xs">{record.remarks || "—"}</TableCell>
+                  <TableCell className="text-center">
+                    {!record.dateIn ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-7 px-2 text-[10px] border-primary text-primary hover:bg-primary/10"
+                        onClick={() => {
+                          setSelectedRecord(record);
+                          setReturnDialogOpen(true);
+                        }}
+                      >
+                        <Undo2 className="w-3 h-3 mr-1" />
+                        Return
+                      </Button>
+                    ) : (
+                      <span className="text-[10px] text-green-600 font-bold uppercase">Returned</span>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))
             )}
@@ -224,6 +261,15 @@ const DailyArmsRegister = () => {
         onOpenChange={setDialogOpen}
         onSubmit={handleAddRecord}
       />
+
+      {selectedRecord && (
+        <ReturnArmsDialog
+          open={returnDialogOpen}
+          onOpenChange={setReturnDialogOpen}
+          onSubmit={handleReturnArms}
+          recordName={selectedRecord.name}
+        />
+      )}
     </div>
   );
 };

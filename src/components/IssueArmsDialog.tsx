@@ -23,7 +23,6 @@ interface IssueArmsDialogProps {
     buttNo: string;
     registerNo: string;
     dateOut: string;
-    signature: string;
     dateIn: string;
     signatureStoreman: string;
     remarks: string;
@@ -41,7 +40,6 @@ const IssueArmsDialog = ({ open, onOpenChange, onSubmit }: IssueArmsDialogProps)
     buttNo: "",
     registerNo: "",
     dateOut: new Date().toLocaleDateString("en-GB"),
-    signature: "",
     dateIn: "",
     signatureStoreman: "",
     remarks: "",
@@ -64,7 +62,6 @@ const IssueArmsDialog = ({ open, onOpenChange, onSubmit }: IssueArmsDialogProps)
       buttNo: "",
       registerNo: "",
       dateOut: new Date().toLocaleDateString("en-GB"),
-      signature: "",
       dateIn: "",
       signatureStoreman: "",
       remarks: "",
