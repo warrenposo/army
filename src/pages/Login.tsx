@@ -185,7 +185,7 @@ const Login = () => {
                   <Input
                     id="regName"
                     type="text"
-                    placeholder="e.g. Warren Poso Okumu"
+                    placeholder="e.g. John Doe"
                     value={name}
                     onChange={(e) => {
                       setName(e.target.value);
